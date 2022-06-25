@@ -29,6 +29,7 @@ import {
   useUserProvider,
 } from "./hooks";
 import Mint from "./components/Mint";
+import Trees from "./components/Trees";
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -429,73 +430,79 @@ function App(props) {
                 </Button>
               )}
             </div>
+            <Trees
+              yourCollectibles={yourCollectibles}
+              readContracts={readContracts}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+            />
+            {/* <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}> */}
+            {/*  <List */}
+            {/*    bordered */}
+            {/*    dataSource={yourCollectibles} */}
+            {/*    renderItem={item => { */}
+            {/*      const id = item.id.toNumber(); */}
+            {/*      // const bctBalance = await readContracts.NonFungibleForest.tokenIdToBCTBal(id); */}
+            {/*      //    console.log(bctBalance); */}
+            {/*      console.log("IMAGE", item.image); */}
 
-            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
-              <List
-                bordered
-                dataSource={yourCollectibles}
-                renderItem={item => {
-                  const id = item.id.toNumber();
+            {/*      return ( */}
+            {/*        <List.Item key={id + "_" + item.uri + "_" + item.owner}> */}
+            {/*          <Card */}
+            {/*            title={ */}
+            {/*              <div> */}
+            {/*                <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span> */}
+            {/*              </div> */}
+            {/*            } */}
+            {/*          > */}
+            {/*            <a */}
+            {/*              href={ */}
+            {/*                "https://opensea.io/assets/" +*/}
+            {/*                (readContracts && */}
+            {/*                  readContracts.NonFungibleForest && */}
+            {/*                  readContracts.NonFungibleForest.address) +*/}
+            {/*                "/" +*/}
+            {/*                item.id */}
+            {/*              } */}
+            {/*              target="_blank" */}
+            {/*            > */}
+            {/*              <img src={item.image} /> */}
+            {/*            </a> */}
+            {/*            <div>{`${4} BCT Captured`}</div> */}
+            {/*          </Card> */}
 
-                  console.log("IMAGE", item.image);
-
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                          </div>
-                        }
-                      >
-                        <a
-                          href={
-                            "https://opensea.io/assets/" +
-                            (readContracts &&
-                              readContracts.NonFungibleForest &&
-                              readContracts.NonFungibleForest.address) +
-                            "/" +
-                            item.id
-                          }
-                          target="_blank"
-                        >
-                          <img src={item.image} />
-                        </a>
-                        <div>{item.description}</div>
-                      </Card>
-
-                      <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setTransferToAddresses({ ...transferToAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.NonFungibleForest.transferFrom(address, transferToAddresses[id], id));
-                          }}
-                        >
-                          Transfer
-                        </Button>
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
+            {/*          <div> */}
+            {/*            owner:{" "} */}
+            {/*            <Address */}
+            {/*              address={item.owner} */}
+            {/*              ensProvider={mainnetProvider} */}
+            {/*              blockExplorer={blockExplorer} */}
+            {/*              fontSize={16} */}
+            {/*            /> */}
+            {/*            <AddressInput */}
+            {/*              ensProvider={mainnetProvider} */}
+            {/*              placeholder="transfer to address" */}
+            {/*              value={transferToAddresses[id]} */}
+            {/*              onChange={newValue => { */}
+            {/*                const update = {}; */}
+            {/*                update[id] = newValue; */}
+            {/*                setTransferToAddresses({ ...transferToAddresses, ...update }); */}
+            {/*              }} */}
+            {/*            /> */}
+            {/*            <Button */}
+            {/*              onClick={() => { */}
+            {/*                console.log("writeContracts", writeContracts); */}
+            {/*                tx(writeContracts.NonFungibleForest.transferFrom(address, transferToAddresses[id], id)); */}
+            {/*              }} */}
+            {/*            > */}
+            {/*              Transfer */}
+            {/*            </Button> */}
+            {/*          </div> */}
+            {/*        </List.Item> */}
+            {/*      ); */}
+            {/*    }} */}
+            {/*  /> */}
+            {/* </div> */}
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
               🛠 built with{" "}
               <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">
