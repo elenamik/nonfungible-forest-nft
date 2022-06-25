@@ -10,30 +10,32 @@ import 'base64-sol/base64.sol';
 import './HexStrings.sol';
 import './ToColor.sol';
 import './DummyBCT.sol';
+import 'hardhat/console.sol';
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
 contract NonFungibleForest is ERC721, Ownable {
 
     DummyBCT public BCT;
-
     using Strings for uint256;
-  using HexStrings for uint160;
-  using ToColor for bytes3;
+    using HexStrings for uint160;
+    using ToColor for bytes3;
 
-  using Counters for Counters.Counter;
-  Counters.Counter private _tokenIds;
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
 
     uint256 constant public _supply_cap = 10;
     uint256 constant bct_min = 5;
 
+    // track how much BCT Bal belongs to a tokenId (id -> bct bal)
+    mapping (uint256 => uint256) public tokenIdToBCTBal;
 
     constructor(address bctAddress) public ERC721("Non Fungible Forest", "NFF") {
       BCT = DummyBCT(bctAddress);
-  }
+    }
 
-  mapping (uint256 => bytes3) public color;
-  mapping (uint256 => uint256) public chubbiness;
+    mapping (uint256 => bytes3) public color;
+    mapping (uint256 => uint256) public chubbiness;
 
     // decay rate -> static value
     // height based off the carbon it holds
@@ -48,23 +50,32 @@ contract NonFungibleForest is ERC721, Ownable {
       public
       returns (uint256)
   {
-      uint256 id = _tokenIds.current();
-      require(id <= _supply_cap, "NO MORE TO MINT");
-      _tokenIds.increment();
+        uint256 id = _tokenIds.current();
+        require(id <= _supply_cap, "NO MORE TO MINT");
+        require(bctAmount >= bct_min, "BCT Deposit below the minimum");
 
-      // before you mint, must trigger "approve" to allow contract to transfer the tokens
+        console.log('BCT BAL', BCT.balanceOf(msg.sender));
+        console.log('BCT AMOUNT', bctAmount);
 
-      // 1. attempt the transfer of BCT to self
-      // minimum of tokens?
-      // 2. if successful, use the balance
+        // ui must have first triggered the "approve" on the BCT token
+        require(BCT.balanceOf(msg.sender) >= bctAmount, 'User does not hold enough BCT');
+        console.log('ITEM ID', id);
 
-      _mint(msg.sender, id);
+        // 1. attempt the transfer of BCT to self
+        bool tokenTransferSuccess = BCT.transferFrom(msg.sender, address(this), bctAmount);
+        require(tokenTransferSuccess, 'BCT transfer failed');
 
-      bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), id ));
-      color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
-      chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
+        tokenIdToBCTBal[id]=bctAmount;
 
-      return id;
+        // 2. if successful, use the balance to do some fun minting
+        _mint(msg.sender, id);
+        _tokenIds.increment();
+
+        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), id ));
+        color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
+        chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
+
+        return id;
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
