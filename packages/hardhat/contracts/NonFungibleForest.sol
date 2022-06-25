@@ -10,7 +10,6 @@ import 'base64-sol/base64.sol';
 import './HexStrings.sol';
 import './ToColor.sol';
 import './DummyBCT.sol';
-//learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
@@ -25,9 +24,11 @@ contract NonFungibleForest is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-    uint256 public _supply_cap;
+    uint256 constant public _supply_cap = 10;
+    uint256 constant bct_min = 5;
 
-  constructor(address bctAddress) public ERC721("Non Fungible Forest", "NFF") {
+
+    constructor(address bctAddress) public ERC721("Non Fungible Forest", "NFF") {
       BCT = DummyBCT(bctAddress);
   }
 
@@ -43,13 +44,19 @@ contract NonFungibleForest is ERC721, Ownable {
     // color of the flowers is random
 
 
-  function mintItem()
+  function mintItem(uint256 bctAmount)
       public
       returns (uint256)
   {
       uint256 id = _tokenIds.current();
       require(id <= _supply_cap, "NO MORE TO MINT");
       _tokenIds.increment();
+
+      // before you mint, must trigger "approve" to allow contract to transfer the tokens
+
+      // 1. attempt the transfer of BCT to self
+      // minimum of tokens?
+      // 2. if successful, use the balance
 
       _mint(msg.sender, id);
 
