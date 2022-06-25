@@ -422,7 +422,7 @@ function App(props) {
 
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               {isSigner ? (
-                <Mint writeContracts={writeContracts} />
+                <Mint writeContracts={writeContracts} readContracts={readContracts} />
               ) : (
                 <Button type="primary" onClick={loadWeb3Modal}>
                   CONNECT WALLET
