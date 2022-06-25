@@ -9,35 +9,48 @@ import 'base64-sol/base64.sol';
 
 import './HexStrings.sol';
 import './ToColor.sol';
+import './DummyBCT.sol';
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract YourCollectible is ERC721, Ownable {
+contract NonFungibleForest is ERC721, Ownable {
 
-  using Strings for uint256;
+    DummyBCT public BCT;
+
+    using Strings for uint256;
   using HexStrings for uint160;
   using ToColor for bytes3;
+
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() public ERC721("Loogies", "LOOG") {
-    // RELEASE THE LOOGIES!
+    uint256 public _supply_cap;
+
+  constructor(address bctAddress) public ERC721("Non Fungible Forest", "NFF") {
+      BCT = DummyBCT(bctAddress);
   }
 
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;
 
-  uint256 mintDeadline = block.timestamp + 24 hours;
+    // decay rate -> static value
+    // height based off the carbon it holds
+    // trunk thickness based off the carbon
+    // amount of leaves based on carbon
+    // flowering, non flowering
+    // genus - oak, birch, maple, ash, pine
+    // color of the flowers is random
+
 
   function mintItem()
       public
       returns (uint256)
   {
-      require( block.timestamp < mintDeadline, "DONE MINTING");
+      uint256 id = _tokenIds.current();
+      require(id <= _supply_cap, "NO MORE TO MINT");
       _tokenIds.increment();
 
-      uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
 
       bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), id ));

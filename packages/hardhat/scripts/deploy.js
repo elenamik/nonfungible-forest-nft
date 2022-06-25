@@ -20,11 +20,17 @@ const main = async () => {
     bytes32Array.push(bytes32)
   }
   console.log(" \n")*/
+  const BCT = await deploy("DummyBCT") // <-- add in constructor args like line 19 vvvv
+
+  await BCT.transfer(
+      BCT.address,
+      ethers.utils.parseEther("1000")
+  );
 
   // deploy the contract with all the artworks forSale
-  const yourCollectible = await deploy("YourCollectible"/*,[ bytes32Array ]*/) // <-- add in constructor args like line 19 vvvv
+  const yourCollectible = await deploy("NonFungibleForest", [BCT.address]) // <-- add in constructor args like line 19 vvvv
 
-  yourCollectible.transferOwnership("0x34aA3F359A9D614239015126635CE7732c18fDF3") //austingriffith.eth
+  console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
 
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   //const secondContract = await deploy("SecondContract")
