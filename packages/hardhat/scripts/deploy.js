@@ -21,7 +21,7 @@ const main = async () => {
   const BCT = await deploy("DummyBCT"); // <-- add in constructor args like line 19 vvvv
 
   await BCT.transfer(
-    "0x5444a43aea36f3CF015AaF24a938Ae6bAEE2614D",
+    "0xF207a7340103fd098908bc74Eb8174D745BAA3a6",
     ethers.utils.parseEther("1000")
   );
 
