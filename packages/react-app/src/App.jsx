@@ -413,22 +413,13 @@ function App(props) {
               color: "#0E750D"
             }}>{yourBCTBalance}</span>
             </h3>
-
-            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              {isSigner ? (
-                <Mint writeContracts={writeContracts} readContracts={readContracts} />
-              ) : (
-                <Button type="primary" onClick={loadWeb3Modal}>
-                  CONNECT WALLET
-                </Button>
-              )}
-            </div>
+              {isSigner &&
             <Trees
               yourCollectibles={yourCollectibles}
               readContracts={readContracts}
               mainnetProvider={mainnetProvider}
               blockExplorer={blockExplorer}
-            />
+            />}
           </Route>
           <Route path="/debug">
             <div style={{ padding: 32 }}>
