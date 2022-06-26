@@ -1,63 +1,61 @@
-import { Button, InputNumber } from "antd";
 import React from "react";
 import { ethers } from "ethers";
 
 export default function Mint(props) {
-  const [mintClicked, setMintClicked] = React.useState(false);
+  console.log("WRITES", props.writeContracts);
+  const [mintState, setMintState] = React.useState(0);
 
-  const [input, setInput] = React.useState(0);
-  const [approved, setApproved] = React.useState(false);
-
-  const handleChange = event => {
-    setInput(event);
+  const handleMintClick = () => {
+    setMintState(1);
   };
 
-  const handleApprove = async () => {
+  const handleApproveClick = async () => {
     await props.writeContracts.DummyBCT.approve(
       props.readContracts.NonFungibleForest.address,
-      ethers.utils.parseEther(input.toString()),
+      ethers.utils.parseEther("1"),
     );
-    setApproved(true);
+    setMintState(2);
   };
 
-  if (!mintClicked) {
+  if (mintState === 0) {
     return (
       <div>
-        <button
-          style={{
-            color: "#F5F5F5",
-            borderColor: "#0E750D",
-            borderRadius: 100,
-            margin: 20,
-            height: 86,
-          }}
-        >
-          <span style={{ padding: 60, fontSize: 26, color: "#0E750D" }}>Mint a Tree</span>
-        </button>
+        <BigGreenButton handleClick={handleMintClick} text="Mint a Tree for 1 BCT" />
       </div>
     );
   }
-  if (!approved) {
+  if (mintState === 1) {
     return (
       <div>
-        <InputNumber onChange={handleChange} />
-        <Button type="primary" onClick={handleApprove}>
-          APPROVE
-        </Button>
+        <BigGreenButton handleClick={handleApproveClick} text="Approve" />
       </div>
     );
   }
   return (
     <div>
-      <InputNumber onChange={handleChange} />
-      <Button
-        type="primary"
-        onClick={() => {
-          props.writeContracts.NonFungibleForest.mintItem(input);
+      <BigGreenButton
+        text="EXECUTE"
+        handleClick={async () => {
+          await props.writeContracts.NonFungibleForest.mintItem(1);
         }}
-      >
-        MINT
-      </Button>
+      />
     </div>
   );
 }
+
+const BigGreenButton = props => {
+  return (
+    <button
+      style={{
+        color: "#F5F5F5",
+        borderColor: "#0E750D",
+        borderRadius: 100,
+        margin: 20,
+        height: 86,
+      }}
+      onClick={props.handleClick}
+    >
+      <span style={{ padding: 60, fontSize: 26, color: "#0E750D" }}>{props.text}</span>
+    </button>
+  );
+};

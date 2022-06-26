@@ -4,8 +4,8 @@ import React from "react";
 export default function Trees(props) {
 
   const [balances, setBalances] = React.useState({})
-
   console.log('BALS',balances)
+  console.log('COLLS', props.yourCollectibles)
   const getBal = async (item)=> {
     const amountBct = await props.readContracts.NonFungibleForest.tokenIdToBCTBal(item.id);
     setBalances({...balances, [item.id]: amountBct})

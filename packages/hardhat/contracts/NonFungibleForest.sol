@@ -25,7 +25,7 @@ contract NonFungibleForest is ERC721, Ownable {
     Counters.Counter private _tokenIds;
 
     uint256 constant public _supply_cap = 10;
-    uint256 constant bct_min = 5;
+    uint256 constant bct_min = 1;
 
     // track how much BCT Bal belongs to a tokenId (id -> bct bal)
     mapping (uint256 => uint256) public tokenIdToBCTBal;
