@@ -426,6 +426,7 @@ function App(props) {
             <Trees
               yourCollectibles={yourCollectibles}
               readContracts={readContracts}
+              writeContracts={writeContracts}
               mainnetProvider={mainnetProvider}
               blockExplorer={blockExplorer}
             />

@@ -51,12 +51,8 @@ contract NonFungibleForest is ERC721, Ownable {
         require(id <= _supply_cap, "NO MORE TO MINT");
         require(bctAmount >= bct_min, "BCT Deposit below the minimum");
 
-        console.log('BCT BAL', BCT.balanceOf(msg.sender));
-        console.log('BCT AMOUNT', bctAmount);
-
         // ui must have first triggered the "approve" on the BCT token
         require(BCT.balanceOf(msg.sender) >= bctAmount, 'User does not hold enough BCT');
-        console.log('ITEM ID', id);
 
         // 1. attempt the transfer of BCT to self
         bool tokenTransferSuccess = BCT.transferFrom(msg.sender, address(this), bctAmount);
@@ -74,6 +70,24 @@ contract NonFungibleForest is ERC721, Ownable {
   
         return id;
   }
+
+    function eatCarbon(uint256 id, uint256 amountBCT) public returns (uint256) {
+        require(_exists(id), "not exist");
+
+        // ui must have first triggered the "approve" on the BCT token
+
+        require(BCT.balanceOf(msg.sender) >= amountBCT, 'User does not hold enough BCT');
+
+        // TODO: do not allow eating carbon if the tree is already 'dead'
+
+        // 1. attempt the transfer of BCT to self
+        bool tokenTransferSuccess = BCT.transferFrom(msg.sender, address(this), amountBCT);
+        require(tokenTransferSuccess, 'BCT transfer failed');
+
+        tokenIdToBCTBal[id]=amountBCT+tokenIdToBCTBal[id];
+
+        return tokenIdToBCTBal[id];
+    }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
