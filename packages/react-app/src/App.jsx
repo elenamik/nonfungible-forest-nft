@@ -402,8 +402,8 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            <div style={{ padding: 5, fontFamily: "Lato" }}>
-              <h1 style={{ paddingTop: 20, fontFamily: "Titan One", fontSize: 60 }}> Mint a Nonfungible Forest</h1>
+            <div style={{ fontFamily: "Lato" }}>
+              <div style={{ paddingTop: 32, paddingBottom:6, fontFamily: "Titan One", fontSize: 60 }}> Mint a Nonfungible Forest</div>
               <div>🌳 Mint a tree for 1 Basic Carbon Token + gas 🌳</div>
               <div>Sustain your trees </div>
               <div>Watch them grow!</div>
@@ -412,6 +412,7 @@ function App(props) {
               Your BCT Balance: <span style={{
               color: "#0E750D"
             }}>{yourBCTBalance}</span>
+            <Mint writeContracts={writeContracts} readContracts={readContracts}/>
             </h3>
               {isSigner &&
             <Trees

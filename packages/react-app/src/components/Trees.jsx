@@ -19,7 +19,6 @@ export default function Trees(props) {
     }
     },[props.yourCollectibles])
 
-  console.log('COLLS',props.yourCollectibles)
   const treeArray = props.yourCollectibles?.map(item => {
     return (
 
@@ -48,10 +47,9 @@ export default function Trees(props) {
     );
   });
 
-  console.log('COLLS TREE ARR', treeArray)
   return <div
       style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
-    <h2 style={{ paddingTop: 20, fontFamily: "Titan One", fontSize: 50}} > Your Trees</h2>
+    <h2 style={{ paddingTop: 12, fontFamily: "Titan One", fontSize: 50}} > Your Trees</h2>
     {treeArray}
   </div>;
 }
