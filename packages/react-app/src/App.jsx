@@ -404,32 +404,26 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            <div style={{ padding: 5, fontFamily: "Lato" }}>
-              <h1 style={{ paddingTop: 20, fontFamily: "Titan One", fontSize: 60 }}> Mint a Nonfungible Forest</h1>
+            <div style={{ fontFamily: "Lato" }}>
+              <div style={{ paddingTop: 32, paddingBottom:6, fontFamily: "Titan One", fontSize: 60 }}> Mint a Nonfungible Forest</div>
               <div>🌳 Mint a tree for 1 Basic Carbon Token + gas 🌳</div>
               <div>Sustain your trees </div>
               <div>Watch them grow!</div>
             </div>
-            <div>
-              Your BCT Balance: <span>{yourBCTBalance}</span>
-            </div>
-
-            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              {isSigner ? (
-                <Mint writeContracts={writeContracts} readContracts={readContracts} />
-              ) : (
-                <Button type="primary" onClick={loadWeb3Modal}>
-                  CONNECT WALLET
-                </Button>
-              )}
-            </div>
+            <h3 style={{fontWeight: 700}}>
+              Your BCT Balance: <span style={{
+              color: "#0E750D"
+            }}>{yourBCTBalance}</span>
+              <Mint writeContracts={writeContracts} readContracts={readContracts}/>
+            </h3>
+            {isSigner &&
             <Trees
               yourCollectibles={yourCollectibles}
               readContracts={readContracts}
               writeContracts={writeContracts}
               mainnetProvider={mainnetProvider}
               blockExplorer={blockExplorer}
-            />
+            />}
           </Route>
           <Route path="/debug">
             <div style={{ padding: 32 }}>
