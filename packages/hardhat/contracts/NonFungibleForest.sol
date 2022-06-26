@@ -15,7 +15,6 @@ import 'hardhat/console.sol';
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
 contract NonFungibleForest is ERC721, Ownable {
-
     DummyBCT public BCT;
     uint public BCTMultiplier = 2;
 
@@ -24,8 +23,6 @@ contract NonFungibleForest is ERC721, Ownable {
 
     uint256 constant public _supply_cap = 10;
     uint256 constant bct_min = 1;
-    uint256 public _age;
-    uint256 public _requiredCarbon;
 
     // track how much BCT Bal belongs to a tokenId (id -> bct bal)
     mapping (uint256 => uint256) public tokenIdToBCTBal;
@@ -34,9 +31,6 @@ contract NonFungibleForest is ERC721, Ownable {
       BCT = DummyBCT(bctAddress);
     }
 
-    mapping (uint256 => uint32) public age;
-    mapping (uint256 => bytes3) public color;
-    mapping (uint256 => uint256) public chubbiness;
     mapping (uint256 => uint256) public createdAt;
 
     // decay rate -> static value
@@ -76,9 +70,6 @@ contract NonFungibleForest is ERC721, Ownable {
 
         // VRF for type tree
         bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), id ));
-        color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
-        chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
-        age[id] = 0;
         createdAt[id] = now;
   
         return id;
@@ -98,14 +89,22 @@ contract NonFungibleForest is ERC721, Ownable {
   }
   
   function requiredCarbon(uint256 id) public view returns (uint256) {
-    return age[id] * BCTMultiplier * 10000 / 1000000;
+      uint age = this.getAge(id);
+      return age * BCTMultiplier * 10**15;
   }
   
-//  function derivedProperties() {
-//    if (this.balanceOf(msg.sender) > requiredCarbon()) {
-//        age * trunkAttrRand;
-//        age * heightAttrRand;
-//    }
-//
-//  }
+  function derivedProperties(uint256 id) public view returns ( uint256 trunk, uint256 height, uint256 requiredCarbon) {
+      uint reqCarbon = this.requiredCarbon(id);
+      uint ageTree = this.getAge(id);
+      if (this.balanceOf(msg.sender) > reqCarbon) {
+          uint256 height = ageTree*2;
+          uint256 trunk = ageTree*1;
+      }
+      else {
+        uint256 height = 0;
+        uint256 trunk = 0;
+        uint reqCarbon =0;
+        }
+      return (trunk, height, requiredCarbon);
+}
 }
