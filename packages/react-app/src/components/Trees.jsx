@@ -5,19 +5,23 @@ import {ethers} from "ethers";
 export default function Trees(props) {
   const [balances, setBalances] = React.useState({});
 
-  const getBal = async item => {
-    const amountBct = await props.readContracts.NonFungibleForest.tokenIdToBCTBal(item.id);
-    setBalances({ ...balances, [item.id]: amountBct });
+  const getBal = item => {
+    return props.readContracts.NonFungibleForest.tokenIdToBCTBal(item.id);
   };
 
   React.useEffect(() => {
     if (props.yourCollectibles) {
-      props.yourCollectibles.forEach(item => {
-        getBal(item);
+      console.log('getting bal for',props.yourCollectibles)
+      const results = props.yourCollectibles.map(item => {
+        return getBal(item);
       });
+      Promise.all(results).then((results)=>{
+        for (let i = 0; i < results.length; i++) {
+      //    console.log('XX TEST', result.toString())
+          setBalances({...balances, [i]: results[i].toString()})
+        }})
     }
   }, [props.yourCollectibles]);
-
 
 
   const treeArray = props.yourCollectibles?.map(item => {
@@ -25,7 +29,7 @@ export default function Trees(props) {
       <Card
         title={
           <div>
-            <span style={{ fontSize: 18, marginRight: 8 }}>ITEM.NAME</span>
+            <span style={{ fontSize: 18, marginRight: 8 }}>Item Number</span>
           </div>
         }
       >

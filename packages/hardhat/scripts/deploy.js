@@ -8,81 +8,23 @@ const R = require("ramda");
 const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
-  // read in all the assets to get their IPFS hash...
-  /*let uploadedAssets = JSON.parse(fs.readFileSync("./uploaded.json"))
-  let bytes32Array = []
-  for(let a in uploadedAssets){
-    console.log(" 🏷 IPFS:",a)
-    let bytes32 = utils.id(a)
-    console.log(" #️⃣ hashed:",bytes32)
-    bytes32Array.push(bytes32)
-  }
-  console.log(" \n")*/
-  const BCT = await deploy("DummyBCT"); // <-- add in constructor args like line 19 vvvv
+  // const BCT = await deploy("DummyBCT"); // <-- add in constructor args like line 19 vvvv
+  //
+  // await BCT.transfer(
+  //   "0xF207a7340103fd098908bc74Eb8174D745BAA3a6",
+  //   ethers.utils.parseEther("1000")
+  // );
 
-  await BCT.transfer(
-    "0xF207a7340103fd098908bc74Eb8174D745BAA3a6",
-    ethers.utils.parseEther("1000")
-  );
-
-  // deploy the contract with all the artworks forSale
-  const yourCollectible = await deploy("NonFungibleForest", [BCT.address]); // <-- add in constructor args like line 19 vvvv
+  await deploy("NonFungibleForest", [BCT.address]); // <-- add in constructor args like line 19 vvvv
 
   console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
 
-  //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
-  //const secondContract = await deploy("SecondContract")
 
-  // const exampleToken = await deploy("ExampleToken")
-  // const examplePriceOracle = await deploy("ExamplePriceOracle")
-  // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
 
-  /*
-  //If you want to send value to an address from the deployer
-  const deployerWallet = ethers.provider.getSigner()
-  await deployerWallet.sendTransaction({
-    to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-    value: ethers.utils.parseEther("0.001")
-  })
-  */
 
-  /*
-  //If you want to send some ETH to a contract on deploy (make your constructor payable!)
-  const yourContract = await deploy("YourContract", [], {
-  value: ethers.utils.parseEther("0.05")
-  });
-  */
 
-  /*
-  //If you want to link a library into your contract:
-  // reference: https://github.com/austintgriffith/scaffold-eth/blob/using-libraries-example/packages/hardhat/scripts/deploy.js#L19
-  const yourContract = await deploy("YourContract", [], {}, {
-   LibraryName: **LibraryAddress**
-  });
-  */
 
-  //If you want to verify your contract on tenderly.co (see setup details in the scaffold-eth README!)
-  /*
-  await tenderlyVerify(
-    {contractName: "YourContract",
-     contractAddress: yourContract.address
-  })
-  */
 
-  // If you want to verify your contract on etherscan
-  /*
-  console.log(chalk.blue('verifying on etherscan'))
-  await run("verify:verify", {
-    address: yourContract.address,
-    // constructorArguments: args // If your contract has constructor arguments, you can pass them as an array
-  })
-  */
-
-  console.log(
-    " 💾  Artifacts (address, abi, and args) saved to: ",
-    chalk.blue("packages/hardhat/artifacts/"),
-    "\n\n"
-  );
 };
 
 const deploy = async (
