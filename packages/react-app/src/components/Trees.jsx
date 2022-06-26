@@ -1,55 +1,44 @@
-import { Card } from "antd";
 import React from "react";
+import * as app from "../tree/makeTree";
 
+app.go();
 export default function Trees(props) {
-
-  const [balances, setBalances] = React.useState({})
-  console.log('BALS',balances)
-  console.log('COLLS', props.yourCollectibles)
-  const getBal = async (item)=> {
+  const [balances, setBalances] = React.useState({});
+  console.log("BALS", balances);
+  console.log("COLLS", props.yourCollectibles);
+  const getBal = async item => {
     const amountBct = await props.readContracts.NonFungibleForest.tokenIdToBCTBal(item.id);
-    setBalances({...balances, [item.id]: amountBct})
-  }
+    setBalances({ ...balances, [item.id]: amountBct });
+  };
 
-  React.useEffect(()=>{
-    if (props.yourCollectibles){
-      props.yourCollectibles.forEach((item)=>{
-        getBal(item)
-      })
+  React.useEffect(() => {
+    if (props.yourCollectibles) {
+      props.yourCollectibles.forEach(item => {
+        getBal(item);
+      });
     }
-    },[props.yourCollectibles])
+  }, [props.yourCollectibles]);
 
-  const treeArray = props.yourCollectibles?.map(item => {
-    return (
+  // const tree = new Tree({
+  //   generations: 4, // # for branch' hierarchy
+  //   length: 4.0, // length of root branch
+  //   uvLength: 16.0, // uv.v ratio against geometry length (recommended is generations * length)
+  //   radius: 0.2, // radius of root branch
+  //   radiusSegments: 8, // # of radius segments for each branch geometry
+  //   heightSegments: 8, // # of height segments for each branch geometry
+  // });
+  // const geometry = TreeGeometry.build(tree);
 
-      <Card
-        title={
-          <div>
-            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-          </div>
-        }
-      >
-        <a
-          href={
-            "https://opensea.io/assets/" +
-            (props.readContracts &&
-              props.readContracts.NonFungibleForest &&
-              props.readContracts.NonFungibleForest.address) +
-            "/" +
-            item.id
-          }
-          target="_blank"
-        >
-          <img src={item.image} />
-        </a>
-        <div>{`${balances[item.id]} BCT Captured`}</div>
-      </Card>
-    );
-  });
+  // console.log("tree", tree);
+  // console.log("geom", geometry);
 
-  return <div
-      style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
-    <h2 style={{ paddingTop: 12, fontFamily: "Titan One", fontSize: 50}} > Your Trees</h2>
-    {treeArray}
-  </div>;
+  // createRoot(document.getElementById("root")).render(
+  //   <Canvas>
+  //     <ambientLight />
+  //     <pointLight position={[10, 10, 10]} />
+  //     <Box position={[-1.2, 0, 0]} />
+  //     <Box position={[1.2, 0, 0]} />
+  //   </Canvas>,
+  // );
+  return <div />;
 }
