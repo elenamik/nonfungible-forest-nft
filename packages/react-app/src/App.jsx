@@ -408,9 +408,11 @@ function App(props) {
               <div>Sustain your trees </div>
               <div>Watch them grow!</div>
             </div>
-            <div>
-              Your BCT Balance: <span>{yourBCTBalance}</span>
-            </div>
+            <h3 style={{fontWeight: 700}}>
+              Your BCT Balance: <span style={{
+              color: "#0E750D"
+            }}>{yourBCTBalance}</span>
+            </h3>
 
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               {isSigner ? (
