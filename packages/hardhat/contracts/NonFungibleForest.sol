@@ -107,4 +107,5 @@ contract NonFungibleForest is ERC721, Ownable {
         }
       return (trunk, height, requiredCarbon);
 }
+
 }

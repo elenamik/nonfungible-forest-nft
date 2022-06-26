@@ -5,7 +5,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
-import {ethers, utils} from "ethers";
+import { ethers, utils } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -200,10 +200,9 @@ function App(props) {
         try {
           console.log("GEtting token index", tokenIndex);
           const tokenId = await readContracts.NonFungibleForest.tokenOfOwnerByIndex(address, tokenIndex);
+
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.NonFungibleForest.tokenURI(tokenId);
-          const jsonManifestString = atob(tokenURI.substring(29));
-          console.log("jsonManifestString", jsonManifestString);
+
           /*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
@@ -212,9 +211,9 @@ function App(props) {
 
         */
           try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            // const jsonManifest = JSON.parse(jsonManifestString);
+            // console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({ id: tokenId, owner: address });
           } catch (e) {
             console.log(e);
           }
@@ -222,8 +221,11 @@ function App(props) {
           console.log(e);
         }
       }
+
+      console.log(yourCollectibles);
       setYourCollectibles(collectibleUpdate.reverse());
     };
+
     updateYourCollectibles();
   }, [address, yourBalance]);
 
@@ -354,14 +356,14 @@ function App(props) {
 
   const getBCTBal = async () => {
     const bal = await readContracts.DummyBCT.balanceOf(address);
-    setYourBCTBalance(ethers.utils.formatEther((bal)));
+    setYourBCTBalance(ethers.utils.formatEther(bal));
   };
   React.useEffect(() => {
     if (readContracts?.DummyBCT) {
       getBCTBal();
     }
   }, [readContracts]);
-  console.log('BAL',yourBCTBalance)
+  console.log("BAL", yourBCTBalance);
 
   useOnBlock(mainnetProvider, () => {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
