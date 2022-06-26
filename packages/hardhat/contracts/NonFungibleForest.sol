@@ -37,13 +37,7 @@ contract NonFungibleForest is ERC721, Ownable {
     mapping (uint256 => bytes3) public color;
     mapping (uint256 => uint256) public chubbiness;
 
-    // decay rate -> static value
-    // height based off the carbon it holds
-    // trunk thickness based off the carbon
-    // amount of leaves based on carbon
-    // flowering, non flowering
-    // genus - oak, birch, maple, ash, pine
-    // color of the flowers is random
+
 
 
   function mintItem(uint256 bctAmount)
@@ -54,12 +48,8 @@ contract NonFungibleForest is ERC721, Ownable {
         require(id <= _supply_cap, "NO MORE TO MINT");
         require(bctAmount >= bct_min, "BCT Deposit below the minimum");
 
-        console.log('BCT BAL', BCT.balanceOf(msg.sender));
-        console.log('BCT AMOUNT', bctAmount);
-
         // ui must have first triggered the "approve" on the BCT token
         require(BCT.balanceOf(msg.sender) >= bctAmount, 'User does not hold enough BCT');
-        console.log('ITEM ID', id);
 
         // 1. attempt the transfer of BCT to self
         bool tokenTransferSuccess = BCT.transferFrom(msg.sender, address(this), bctAmount);
@@ -72,6 +62,20 @@ contract NonFungibleForest is ERC721, Ownable {
         _tokenIds.increment();
 
         bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), id ));
+
+        // TODO:
+          // decay rate -> static value
+          // height based off the carbon it holds
+          // trunk thickness based off the carbon
+          // amount of leaves based on carbon
+          // flowering, non flowering
+          // genus - oak, birch, maple, ash, pine
+          // color of the flowers is random
+
+      //
+      // height, based off BC and age
+      // trunk thickness, based off age
+      //
         color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
         chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
 
@@ -80,7 +84,7 @@ contract NonFungibleForest is ERC721, Ownable {
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
-      string memory name = string(abi.encodePacked('Loogie #',id.toString()));
+      string memory name = string(abi.encodePacked('Nonfungible Tree #',id.toString()));
       string memory description = string(abi.encodePacked('This Loogie is the color #',color[id].toColor(),' with a chubbiness of ',uint2str(chubbiness[id]),'!!!'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
