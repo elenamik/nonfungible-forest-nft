@@ -6,11 +6,7 @@ import React from "react";
 export default function Header() {
   return (
     <a href="/">
-      <PageHeader
-        title="🟢 Loogies"
-        subTitle=""
-        style={{ cursor: "pointer" }}
-      />
+      <PageHeader title="🌳 NonFungible Forest" subTitle="" style={{ cursor: "pointer" }} />
     </a>
   );
 }

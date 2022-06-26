@@ -5,7 +5,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
-import { utils } from "ethers";
+import {ethers, utils} from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -350,41 +350,28 @@ function App(props) {
     );
   }
 
-  const [sending, setSending] = useState();
-  const [ipfsHash, setIpfsHash] = useState();
-  const [ipfsDownHash, setIpfsDownHash] = useState();
+  const [yourBCTBalance, setYourBCTBalance] = React.useState();
 
-  const [downloading, setDownloading] = useState();
-  const [ipfsContent, setIpfsContent] = useState();
+  const getBCTBal = async () => {
+    const bal = await readContracts.DummyBCT.balanceOf(address);
+    setYourBCTBalance(ethers.utils.formatEther((bal)));
+  };
+  React.useEffect(() => {
+    if (readContracts?.DummyBCT) {
+      getBCTBal();
+    }
+  }, [readContracts]);
+  console.log('BAL',yourBCTBalance)
 
-  const [transferToAddresses, setTransferToAddresses] = useState({});
-
-  const [loadedAssets, setLoadedAssets] = useState();
-  /* useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const assetUpdate = [];
-      for (const a in assets) {
-        try {
-          const forSale = await readContracts.NonFungibleForest.forSale(utils.id(a));
-          let owner;
-          if (!forSale) {
-            const tokenId = await readContracts.NonFungibleForest.uriToTokenId(utils.id(a));
-            owner = await readContracts.NonFungibleForest.ownerOf(tokenId);
-          }
-          assetUpdate.push({ id: a, ...assets[a], forSale, owner });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setLoadedAssets(assetUpdate);
-    };
-    if (readContracts && readContracts.NonFungibleForest) updateYourCollectibles();
-  }, [assets, readContracts, transferEvents]); */
-
-  const galleryList = [];
+  useOnBlock(mainnetProvider, () => {
+    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+    if (readContracts?.DummyBCT) {
+      getBCTBal();
+    }
+  });
 
   return (
-    <div className="App">
+    <div className="App" style={{ fontFamily: "Lato" }}>
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
@@ -398,7 +385,7 @@ function App(props) {
               }}
               to="/"
             >
-              Your Non Fungible Forest
+              Demo
             </Link>
           </Menu.Item>
           <Menu.Item key="/debug">
@@ -415,11 +402,15 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
+            <div style={{ padding: 5, fontFamily: "Lato" }}>
+              <h1 style={{ paddingTop: 20, fontFamily: "Titan One", fontSize: 60 }}> Mint a Nonfungible Forest</h1>
+              <div>🌳 Mint a tree for 1 Basic Carbon Token + gas 🌳</div>
+              <div>Sustain your trees </div>
+              <div>Watch them grow!</div>
+            </div>
+            <div>
+              Your BCT Balance: <span>{yourBCTBalance}</span>
+            </div>
 
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               {isSigner ? (
@@ -436,84 +427,6 @@ function App(props) {
               mainnetProvider={mainnetProvider}
               blockExplorer={blockExplorer}
             />
-            {/* <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}> */}
-            {/*  <List */}
-            {/*    bordered */}
-            {/*    dataSource={yourCollectibles} */}
-            {/*    renderItem={item => { */}
-            {/*      const id = item.id.toNumber(); */}
-            {/*      // const bctBalance = await readContracts.NonFungibleForest.tokenIdToBCTBal(id); */}
-            {/*      //    console.log(bctBalance); */}
-            {/*      console.log("IMAGE", item.image); */}
-
-            {/*      return ( */}
-            {/*        <List.Item key={id + "_" + item.uri + "_" + item.owner}> */}
-            {/*          <Card */}
-            {/*            title={ */}
-            {/*              <div> */}
-            {/*                <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span> */}
-            {/*              </div> */}
-            {/*            } */}
-            {/*          > */}
-            {/*            <a */}
-            {/*              href={ */}
-            {/*                "https://opensea.io/assets/" +*/}
-            {/*                (readContracts && */}
-            {/*                  readContracts.NonFungibleForest && */}
-            {/*                  readContracts.NonFungibleForest.address) +*/}
-            {/*                "/" +*/}
-            {/*                item.id */}
-            {/*              } */}
-            {/*              target="_blank" */}
-            {/*            > */}
-            {/*              <img src={item.image} /> */}
-            {/*            </a> */}
-            {/*            <div>{`${4} BCT Captured`}</div> */}
-            {/*          </Card> */}
-
-            {/*          <div> */}
-            {/*            owner:{" "} */}
-            {/*            <Address */}
-            {/*              address={item.owner} */}
-            {/*              ensProvider={mainnetProvider} */}
-            {/*              blockExplorer={blockExplorer} */}
-            {/*              fontSize={16} */}
-            {/*            /> */}
-            {/*            <AddressInput */}
-            {/*              ensProvider={mainnetProvider} */}
-            {/*              placeholder="transfer to address" */}
-            {/*              value={transferToAddresses[id]} */}
-            {/*              onChange={newValue => { */}
-            {/*                const update = {}; */}
-            {/*                update[id] = newValue; */}
-            {/*                setTransferToAddresses({ ...transferToAddresses, ...update }); */}
-            {/*              }} */}
-            {/*            /> */}
-            {/*            <Button */}
-            {/*              onClick={() => { */}
-            {/*                console.log("writeContracts", writeContracts); */}
-            {/*                tx(writeContracts.NonFungibleForest.transferFrom(address, transferToAddresses[id], id)); */}
-            {/*              }} */}
-            {/*            > */}
-            {/*              Transfer */}
-            {/*            </Button> */}
-            {/*          </div> */}
-            {/*        </List.Item> */}
-            {/*      ); */}
-            {/*    }} */}
-            {/*  /> */}
-            {/* </div> */}
-            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
-              🛠 built with{" "}
-              <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">
-                🏗 scaffold-eth
-              </a>
-              🍴{" "}
-              <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">
-                Fork this repo
-              </a>{" "}
-              and build a cool SVG NFT!
-            </div>
           </Route>
           <Route path="/debug">
             <div style={{ padding: 32 }}>
@@ -521,7 +434,6 @@ function App(props) {
                 value={readContracts && readContracts.NonFungibleForest && readContracts.NonFungibleForest.address}
               />
             </div>
-
             <Contract
               name="NonFungibleForest"
               signer={userProvider.getSigner()}
