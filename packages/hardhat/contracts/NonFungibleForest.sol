@@ -92,21 +92,20 @@ contract NonFungibleForest is ERC721, Ownable {
      return name;
   }
 
-  function getAge(uint256 id) public returns (uint256) {
+  function getAge(uint256 id) public view returns (uint256) {
     console.log(now - createdAt[id]);
-    _age = createdAt[id] - now;
+    return now - createdAt[id];
   }
   
-  function requiredCarbon(uint256 id) public returns (uint256) {
-    _requiredCarbon = age[id] * BCTMultiplier * 10000 / 1000000;
+  function requiredCarbon(uint256 id) public view returns (uint256) {
+    return age[id] * BCTMultiplier * 10000 / 1000000;
   }
   
-  function derivedProperties() {
-    if (this.balanceOf(msg.sender) > requiredCarbon()) {
-        
-    }
-
-    age * trunkAttrRand; 			
-    age * heightAttrRand;
-  }
+//  function derivedProperties() {
+//    if (this.balanceOf(msg.sender) > requiredCarbon()) {
+//        age * trunkAttrRand;
+//        age * heightAttrRand;
+//    }
+//
+//  }
 }
